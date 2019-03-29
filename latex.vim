@@ -1,6 +1,9 @@
 let mapleader = ","
 "/	\frac{$0}{$1}
-"beg \begin{$0} \end{$0}
+"beg	\begin{$0} \end{$0}
+"m	$$	
+"eq	\[\]
+"mm	\begin{align} \end{align}
 
 function! Inp(number, function)
 	let inputs = []
@@ -25,3 +28,7 @@ endfunction
 
 inoremap <expr> <leader>/ Inp(2, "TexFrac")
 inoremap <expr> <leader>beg Inp(1, "TexEnvironment") . "\<ESC>O"
+inoremap <leader>m $$<ESC>i
+inoremap <leader>eq \[\]<ESC>hi
+inoremap <expr> <leader>mm TexEnvironment(["align"]) . "\<ESC>O"
+inoremap <leader>\\ \nonumber\\<CR>
