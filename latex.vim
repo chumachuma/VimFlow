@@ -2,36 +2,26 @@ let mapleader = ","
 "/	\frac{$0}{$1}
 "beg \begin{$0} \end{$0}
 
-function! Inputs(number)
-	let output = []
+function! Inp(number, function)
+	let inputs = []
 	call inputsave()
 	let c = 0
 	while c < a:number
+		let in = input(c . ': ')
+		call add(inputs, in)
 		let c += 1
-		let in = input('')
-		call add(output, in)
 	endwhile
 	call inputrestore()
-	return output
+	exec "return " . a:function . "(inputs)"
 endfunction
 
-function! TexFrac(numerator, denominator)
-	return "\\frac{" . a:numerator . "}{" . a:denominator . "}"
+function! TexFrac(inputs)
+	return "\\frac{" . a:inputs[0] . "}{" . a:inputs[1] . "}"
 endfunction
 
-function! ITexFrac()
-	let inputs = Inputs(2)
-	return TexFrac(inputs[0], inputs[1])
+function! TexEnvironment(inputs)
+	return "\\begin{" . a:inputs[0] . "}\n\\end{" . a:inputs[0] . "}"
 endfunction
 
-function! TexEnvironment(environment)
-	return "\\begin{" . a:environment . "}\n\\end{" . a:environment . "}"
-endfunction
-
-function! ITexEnvironment()
-	let inputs = Inputs(1)
-	return TexEnvironment(inputs[0])
-endfunction
-
-inoremap <expr> <leader>/ ITexFrac()
-inoremap <expr> <leader>beg ITexEnvironment()
+inoremap <expr> <leader>/ Inp(2, "TexFrac")
+inoremap <expr> <leader>beg Inp(1, "TexEnvironment") . "\<ESC>O"
